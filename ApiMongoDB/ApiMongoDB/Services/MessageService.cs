@@ -12,6 +12,7 @@ namespace ApiMongoDB.Services
     {
         private readonly IMongoCollection<Mensaje> _messages;
 
+        
         public MessageService(IMessageDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
@@ -29,8 +30,14 @@ namespace ApiMongoDB.Services
         public Mensaje Create(Mensaje mensaje)
         {
             _messages.InsertOne(mensaje);
+
             return mensaje;
         }
+        //public async Task Find(string json)
+        //{
+        //    var dummy = await _messages.Find($"{ { _id: ObjectId("507f1f77bcf86cd799439011") } }")
+        //    .SingleAsync();
+        //}
 
         public void Update(string id, Mensaje mensajeIn) =>
             _messages.ReplaceOne(mensaje => mensaje.Id == id, mensajeIn);

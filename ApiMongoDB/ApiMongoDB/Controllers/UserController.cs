@@ -40,7 +40,7 @@ namespace ApiMongoDB.Controllers
         [HttpPost]
         public ActionResult<Usuario> Create(Usuario user)
         {
-            _userService.Create(user);
+            _userService.Create(user); 
 
             return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
         }

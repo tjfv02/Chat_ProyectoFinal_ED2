@@ -14,7 +14,9 @@ namespace ApiMongoDB.Models
         public string Id { get; set; }
         [BsonElement("Mensaje")]
         public string Contenido { get; set; }
-        //public string Usuario { get; set; }
+        public string Sala { get; set; } //Id de la sala
+        public string Emisor { get; set; } // id usuario que escribe
+
         // public DateTime Hora { get; set; }
     }
 }

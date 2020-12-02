@@ -12,10 +12,13 @@ namespace ApiMongoDB.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+        //participantes 
         [BsonElement("Usuario1")]
         public string UsuarioEmisor { get; set; }
         [BsonElement("Usuario2")]
         public string UsuarioReceptor { get; set; }
-        public ICollection<Mensaje> MensajesSala { get; set; }
+
+
+       // public ICollection<Mensaje> MensajesSala { get; set; }
     }
 }
