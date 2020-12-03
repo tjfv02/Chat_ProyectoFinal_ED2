@@ -5,16 +5,16 @@ using System.Text;
 
 namespace ProcesosAlternos
 {
-    public class CesarEncryptor
+    public class Cesar
     {
         private readonly string Path;
 
-        public CesarEncryptor()
+        public Cesar()
         {
             Path = null;
         }
 
-        public CesarEncryptor(string path)
+        public Cesar(string path)
         {
             Path = path;
         }

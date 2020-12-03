@@ -9,7 +9,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-
+using ProcesosAlternos;
 namespace DiseñoChatMVC.Controllers
 {
     public class ChatController : Controller
@@ -17,8 +17,9 @@ namespace DiseñoChatMVC.Controllers
         public  List<Usuario> InfoContactos = new List<Usuario>(); //info para la lista de contactos
         public  List<Mensaje> SalaMensajes = new List<Mensaje>();
         public List<Sala> InfoSalas = new List<Sala>();
-
-
+        Cesar CifrarPass = new Cesar();
+         
+        
         //CesarEncryptor cesarEncryptor = new CesarEncryptor();
         //int LlaveCesar = 3;
 
@@ -69,7 +70,7 @@ namespace DiseñoChatMVC.Controllers
             {
                 foreach (var usuario in usuarios)
                 {
-                     if (collection["NombreUsuario"] == usuario.NombreUsuario && collection["Password"] == usuario.Password)
+                     if (collection["NombreUsuario"] == usuario.NombreUsuario && collection["Password"] == CifrarPass.DecipherPassword(usuario.Password))
                      {
                         await Contactos(usuario.Id);
                         return RedirectToAction("Contactos");   // ingresa
@@ -100,7 +101,7 @@ namespace DiseñoChatMVC.Controllers
                 Usuario Registrar = new Usuario()
                 {
                     NombreUsuario = collection["NombreUsuario"],
-                    Password = collection["Password"],
+                    Password = CifrarPass.CipherPassword(collection["Password"]),
                     Nombre = collection["Nombre"],
                     Apellido = collection["Apellido"]
                 };
@@ -218,6 +219,7 @@ namespace DiseñoChatMVC.Controllers
                 }
                 directarchivo = path + Path.GetFileName(postedFile.FileName);
                 postedFile.SaveAs(directarchivo);
+
             }
 
 
