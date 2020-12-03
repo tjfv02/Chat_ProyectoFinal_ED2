@@ -1,11 +1,10 @@
 ﻿@model DiseñoChatMVC.Models.Usuario
 
 @{
-    ViewBag.Title = "Login";
+    ViewBag.Title = "Log_in";
 }
 
 <h2>Login</h2>
-
 
 @using (Html.BeginForm())
 {
@@ -46,7 +45,3 @@
         @Html.ActionLink("Registrar", "Registro")
     </h5>
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

@@ -1,5 +1,6 @@
 ﻿using ApiMongoDB.Models;
 using ApiMongoDB.Models.DatabaseSettings;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -40,5 +41,7 @@ namespace ApiMongoDB.Services
 
         public void Remove(string id) =>
             _users.DeleteOne(usuario => usuario.Id == id);
+
+        
     }
 }

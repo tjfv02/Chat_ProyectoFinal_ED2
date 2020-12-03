@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -17,14 +18,16 @@ namespace DiseñoChatMVC.Controllers
         public  List<Mensaje> SalaMensajes = new List<Mensaje>();
         public List<Sala> InfoSalas = new List<Sala>();
 
-        
+
+        //CesarEncryptor cesarEncryptor = new CesarEncryptor();
+        //int LlaveCesar = 3;
 
 
         // GET: User
-        public async Task<ActionResult> Contactos() //Lista de contactos 
+        public async Task<ActionResult> Contactos(string logueado) //Lista de contactos 
         {
-            
-            string json = await GetApiJson("http://localhost:5000/api/user");
+         
+            string json = await GetApiJson("http://localhost:5000/api/user"); 
             var usuarios = JsonConvert.DeserializeObject<List<Usuario>>(json);
 
             foreach (var usuario in usuarios)
@@ -36,7 +39,9 @@ namespace DiseñoChatMVC.Controllers
                     Nombre = usuario.Nombre,
                     Apellido = usuario.Apellido
                 };
-                InfoContactos.Add(usuario1);
+                
+                 InfoContactos.Add(usuario1);
+                
             }
 
             return View(InfoContactos);
@@ -48,14 +53,14 @@ namespace DiseñoChatMVC.Controllers
             return View();
         }
 
-        public ActionResult Login()
+        public ActionResult Log_in()
         {
             return View();
         }
 
         // POST: User/Create
         [HttpPost]
-        public async Task<ActionResult> Login(FormCollection collection)
+        public async Task<ActionResult> Log_in(FormCollection collection)
         {
             string json = await GetApiJson("http://localhost:5000/api/user");
             var usuarios = JsonConvert.DeserializeObject<List<Usuario>>(json);
@@ -66,7 +71,8 @@ namespace DiseñoChatMVC.Controllers
                 {
                      if (collection["NombreUsuario"] == usuario.NombreUsuario && collection["Password"] == usuario.Password)
                      {
-                         return RedirectToAction("Contactos",usuario.Id);// ingresa
+                        await Contactos(usuario.Id);
+                        return RedirectToAction("Contactos");   // ingresa
                      }
                 }
                 return View("Error");  //Contraseña Incorrecta o usuario no existente
@@ -143,15 +149,12 @@ namespace DiseñoChatMVC.Controllers
                     HoraActual = mensaje.HoraActual
                 };
                 //------------------------------------
-                foreach (var IdSala in InfoSalas)
-                {
-                    if (mensajeSala.Sala ==  IdSala.Id)
-                    {
-                        SalaMensajes.Add(mensajeSala);
+                
+                
+                SalaMensajes.Add(mensajeSala);
                         
-                    }
-
-                }
+                    
+                
 
             }
 
@@ -170,20 +173,21 @@ namespace DiseñoChatMVC.Controllers
             try
             {
                 await GetSalas();
-                foreach (var sala in InfoSalas)
-                {
+                //foreach (var sala in InfoSalas)
+                //{
                     Mensaje Enviar = new Mensaje()
                     {
                         Contenido = collection["Contenido"],
-                        Usuario1 = sala.Usuario1,
-                        Usuario2 = sala.Usuario2,
-                        Sala = sala.Id,
+                        //Usuario1 = sala.Usuario1,
+                        //Usuario2 = sala.Usuario2,
+                        //Sala = sala.Id,
                         HoraActual = DateTime.Now.ToString("hh:mm:ss")
                     };
-                SalaMensajes.Add(Enviar);
-                await PostApiJsonMensaje("http://localhost:5000/api/message", Enviar);
 
-                }
+                    //SalaMensajes.Add(Enviar);
+                    await PostApiJsonMensaje("http://localhost:5000/api/message", Enviar);
+
+                //}
                 
 
                 return RedirectToAction("Chat");
@@ -193,6 +197,71 @@ namespace DiseñoChatMVC.Controllers
                 return View();
             }
         }
+        //GET
+        public ActionResult CargaArch()
+        {
+            ViewBag.Message = "Elección de archivo";
+            return View();
+        }
+        //Post
+        [HttpPost]
+        public ActionResult Carga(HttpPostedFileBase postedFile)
+        {
+
+            string directarchivo = string.Empty;
+            if (postedFile != null)
+            {
+                string path = Server.MapPath("~/Cargas/");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                directarchivo = path + Path.GetFileName(postedFile.FileName);
+                postedFile.SaveAs(directarchivo);
+            }
+
+
+
+
+            return RedirectToAction("Chat");
+        }
+        public ActionResult CrearSala()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> CrearSala(FormCollection collection)
+        {
+            string json = await GetApiJson("http://localhost:5000/api/room");
+            var salas = JsonConvert.DeserializeObject<List<Sala>>(json);
+
+            try
+            {
+                Sala crear = new Sala()
+                {
+                    Usuario1 = collection["Usuario1"],
+                    Usuario2 = collection["Usuario2"]
+                };
+               
+                //InfoSalas.Add(salasCrear);
+
+                // mandar a DB
+                await PostApiJsonSala("http://localhost:5000/api/room", crear);
+
+                return RedirectToAction("Chat");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+
+
+
+
+
+        //---------------------------------------------------------------------------
 
 
         //Lectura base de datos
@@ -246,24 +315,7 @@ namespace DiseñoChatMVC.Controllers
             }
         }
 
-        public async Task dummy()
-        {
-            string json = await GetApiJson("http://localhost:5000/api/room");
-            var salas = JsonConvert.DeserializeObject<List<Sala>>(json);
-
-            foreach (var sala in salas)
-            {
-                Sala salaUsuarios = new Sala()
-                {
-                    Id = sala.Id,
-                    Usuario1 = sala.Usuario1,
-                    Usuario2 = sala.Usuario2
-                };
-                InfoSalas.Add(salaUsuarios);
-            }
-
-
-        }
+        
         
     }
 }
