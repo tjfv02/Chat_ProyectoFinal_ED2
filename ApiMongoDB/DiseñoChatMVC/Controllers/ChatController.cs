@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using ProcesosAlternos;
+using ProcesosAlternos.LZW;
+
 namespace DiseñoChatMVC.Controllers
 {
     public class ChatController : Controller
@@ -18,10 +20,8 @@ namespace DiseñoChatMVC.Controllers
         public  List<Mensaje> SalaMensajes = new List<Mensaje>();
         public List<Sala> InfoSalas = new List<Sala>();
         Cesar CifrarPass = new Cesar();
-         
+        LZWCompresor ComprimirArchivos = new LZWCompresor();
         
-        //CesarEncryptor cesarEncryptor = new CesarEncryptor();
-        //int LlaveCesar = 3;
 
 
         // GET: User
@@ -219,6 +219,7 @@ namespace DiseñoChatMVC.Controllers
                 }
                 directarchivo = path + Path.GetFileName(postedFile.FileName);
                 postedFile.SaveAs(directarchivo);
+                ComprimirArchivos.Comprimir(directarchivo, path + "\\ArchivosCompresos\\" + Path.GetFileName(postedFile.FileName) + ".lzw", path + "\\ArchivosCompresos\\" + "Compresiones.txt");
 
             }
 

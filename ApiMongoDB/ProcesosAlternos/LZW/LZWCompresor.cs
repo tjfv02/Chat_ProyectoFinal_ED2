@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProcesosAlternos.LZW
 {
-    public class LZWCompresor : ILZW
+    public class LZWCompresor 
     {
         public void LZWAlgoritmo(string dirLectura, string dirEscritura, string dirEscritura2)
         {
